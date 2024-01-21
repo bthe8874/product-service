@@ -23,13 +23,13 @@ public class CategoryController
         this.categoryRepo = categoryRepo;
     }
 
-    @PostMapping("/create")
+    @PostMapping("")
     public ResponseEntity<?> createCategory(@RequestBody Category category)
     {
         try{
             Category newCategory = categoryRepo.save(category);
             return ResponseEntity.ok(newCategory);
-        }catch (DataIntegrityViolationException e)
+        }catch (DataIntegrityViolationException dataIntegrityViolationException)
         {
             return ResponseEntity.badRequest().body("Already existing category.");
         }
@@ -37,16 +37,12 @@ public class CategoryController
 
     }
 
-    @GetMapping("get")
+    @GetMapping("")
     public List<Category> getCategory()
     {
         return categoryRepo.findAll();
     }
 
-    //get category by name
-
-//    @GetMapping("categoryName")
-//    public
 
 
 

@@ -48,10 +48,11 @@ public class ProductController
 
     //get product by ID
     @GetMapping("/{products_id}")
-    public ResponseEntity<Product> getProductbyID(@PathVariable(value = "products_id") Long proudctID)
-            throws ResourceNotFoundException {
+    public ResponseEntity<Product> getProductbyID(@PathVariable(value = "products_id") Long proudctID) throws ResourceNotFoundException {
         return productService.getProductById(proudctID);
+
     }
+
     //delete product
     @DeleteMapping("/{products_id}")
     public ResponseEntity<Map<String, Boolean>> deleteProduct(@PathVariable Long products_id) throws ResourceNotFoundException {
@@ -70,6 +71,15 @@ public class ProductController
 
 
         return productService.updateProduct(products_id,productDetails);
+    }
+
+    @Transactional
+    @PutMapping("/{products_id")
+    public ResponseEntity<Product> updateStockAvaiable(
+            @PathVariable (value = "products_id") Long products_id,
+            @RequestBody Product productDetails) throws ResourceNotFoundException
+    {
+        return productService.updateProductStock(products_id,productDetails);
     }
 
 

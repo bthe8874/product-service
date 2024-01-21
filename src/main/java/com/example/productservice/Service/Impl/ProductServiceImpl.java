@@ -2,8 +2,11 @@ package com.example.productservice.Service.Impl;
 
 import com.example.productservice.Exception.ResourceNotFoundException;
 import com.example.productservice.Model.Product;
+import com.example.productservice.Model.ProductStatus;
 import com.example.productservice.Repository.ProductRepository;
 import com.example.productservice.Service.ProductService;
+import org.hibernate.procedure.ProcedureOutputs;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ProductServiceImpl implements ProductService
@@ -21,8 +25,12 @@ public class ProductServiceImpl implements ProductService
     @Autowired
     private  final ProductRepository productRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository) {
+    @Autowired
+    private  final ModelMapper modelMapper;
+
+    public ProductServiceImpl(ProductRepository productRepository , ModelMapper modelMapper) {
         this.productRepository = productRepository;
+        this.modelMapper= modelMapper;
     }
 
     @Override
@@ -52,7 +60,7 @@ public class ProductServiceImpl implements ProductService
     public ResponseEntity<Map<String, Boolean>> deleteProduct(Long products_id) throws ResourceNotFoundException {
         Product product = productRepository.findById(products_id).
                 orElseThrow(() ->
-                        new ResourceNotFoundException("Product not found with give ID : " + products_id));
+                        new ResourceNotFoundException("Product not found with given ID : " + products_id));
 
         productRepository.delete(product);
         Map<String, Boolean> response = new HashMap<>();
@@ -69,17 +77,45 @@ public class ProductServiceImpl implements ProductService
 
         Product product = productRepository.findById(products_id).
                 orElseThrow(() ->
-                        new ResourceNotFoundException("Product not found with give ID : " + products_id));
+                        new ResourceNotFoundException("Product not found with given ID : " + products_id));
+
+        //modelMapper.map(productDetails,product);
 
         product.setProductName(productDetails.getProductName());
-        product.setProductDetail(productDetails.getProductDetail());
         product.setProductPrice(productDetails.getProductPrice());
-        product.setCategory_name(productDetails.getCategory_name());
-        product.setStockAvailable((productDetails.getStockAvailable()));
+        product.setProductDetail(product.getProductDetail());
 
         final Product updatedProduct = productRepository.save(product);
 
         return ResponseEntity.ok(updatedProduct);
     }
+
+    @Override
+    public ResponseEntity<Product> updateProductStock(Long products_id, Product productdetails) throws ResourceNotFoundException
+    {
+        Product product = productRepository.findById(products_id).orElseThrow(
+                () -> new ResourceNotFoundException("Product with this ID not exist.")
+        );
+
+        product.setStockAvailable(productdetails.getStockAvailable()
+                +
+                product.getStockAvailable());
+
+        if(product.getStockAvailable() > 0)
+        {
+            product.setStatus(ProductStatus.AVAIALABLE);
+        }
+
+        final Product updatedproduct =productRepository.save(product);
+
+        return ResponseEntity.ok(updatedproduct);
+
+
+
+
+
+
+    }
+
 
 }

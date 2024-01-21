@@ -16,4 +16,6 @@ public interface ProductService
 
     ResponseEntity <Product> updateProduct (Long products_id , Product productDetails) throws ResourceNotFoundException;
 
+    ResponseEntity<Product> updateProductStock (Long products_id , Product productdetails) throws  ResourceNotFoundException;
+
 }

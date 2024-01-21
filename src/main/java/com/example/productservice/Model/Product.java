@@ -2,9 +2,11 @@ package com.example.productservice.Model;
 
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 @Entity
 @Table(name = "products")
+
 public class Product
 {
 
@@ -30,6 +32,9 @@ public class Product
     @Column(name = "category_name")
     private String category_name;
 
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
+
     public String getCategory_name() {
         return category_name;
     }
@@ -40,6 +45,15 @@ public class Product
 
     public Product() {
         super();
+    }
+
+
+    public ProductStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ProductStatus status) {
+        this.status = status;
     }
 
     public Product(String productName, String productDetail, float productPrice, int stockAvailable , String category_name) {
