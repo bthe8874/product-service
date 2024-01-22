@@ -40,7 +40,6 @@ public class ProductController
     @PostMapping("")
     public Product createProduct(@RequestBody Product product)
     {
-
         return this.productService.createProduct(product);
     }
 
@@ -58,8 +57,6 @@ public class ProductController
     public ResponseEntity<Map<String, Boolean>> deleteProduct(@PathVariable Long products_id) throws ResourceNotFoundException {
 
         return productService.deleteProduct(products_id);
-
-
     }
     //update a product
     @Transactional

@@ -32,9 +32,8 @@ public class CategoryController
         }catch (DataIntegrityViolationException dataIntegrityViolationException)
         {
             return ResponseEntity.badRequest().body("Already existing category.");
+
         }
-
-
     }
 
     @GetMapping("")
