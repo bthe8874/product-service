@@ -33,7 +33,7 @@ public class Category
         this.productList = productList;
     }
 
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category_name")
     private List<Product> productList;
 
     public Category(String category_name)

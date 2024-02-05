@@ -1,8 +1,10 @@
 package com.example.productservice.Controller;
 
+import com.example.productservice.Exception.ResourceNotFoundException;
 import com.example.productservice.Model.Category;
-import com.example.productservice.Repository.CategoryRepo;
+import com.example.productservice.Repository.CategoryRepository;
 
+import com.example.productservice.Service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -16,35 +18,26 @@ public class CategoryController
 {
 
     @Autowired
-    private final CategoryRepo categoryRepo;
+    private final CategoryService categoryService;
 
-    CategoryController(CategoryRepo categoryRepo)
+    CategoryController(CategoryService categoryService)
     {
-        this.categoryRepo = categoryRepo;
-    }
-
-    @PostMapping("")
-    public ResponseEntity<?> createCategory(@RequestBody Category category)
-    {
-        try{
-            Category newCategory = categoryRepo.save(category);
-            return ResponseEntity.ok(newCategory);
-        }catch (DataIntegrityViolationException dataIntegrityViolationException)
-        {
-            return ResponseEntity.badRequest().body("Already existing category.");
-
-        }
+        this.categoryService=categoryService;
     }
 
     @GetMapping("")
-    public List<Category> getCategory()
-    {
-        return categoryRepo.findAll();
+    public List<Category> getAllCategoris(){
+        return this.categoryService.getCategories();
     }
 
+    @PostMapping("")
+    public Category createCategory(@RequestBody Category category)
+    {
+        return this.categoryService.createCategory(category);
+    }
 
-
-
-
-
+    @GetMapping("{category_id}")
+    public ResponseEntity<Category> getCategoryByID(@PathVariable (value = "category_id")Long categoryID) throws ResourceNotFoundException {
+        return this.categoryService.getCategoryByID(categoryID);
+    }
 }

@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,7 +46,14 @@ public class ProductServiceImpl implements ProductService
     }
 
     @Override
-    public Product createProduct(Product product) {return this.productRepository.save(product);}
+    public Product createProduct(Product product) {
+        try{
+            return this.productRepository.save(product);
+        }catch (DataIntegrityViolationException dataIntegrityViolationException)
+        {
+            logger.error("Product already exists.");
+            throw dataIntegrityViolationException;  }
+    }
 
     @Override
     public ResponseEntity<Product> getProductById(Long proudctID) throws ResourceNotFoundException {
@@ -90,7 +98,7 @@ public class ProductServiceImpl implements ProductService
             Product product = productRepository.findById(products_id).orElseThrow(() ->
                     new ResourceNotFoundException("Product not found with given ID : " + products_id));
 
-            //modelMapper.map(productDetails,product);
+            modelMapper.map(productDetails,product);
 
             product.setProductName(productDetails.getProductName());
             product.setProductPrice(productDetails.getProductPrice());
