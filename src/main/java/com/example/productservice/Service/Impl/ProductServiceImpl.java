@@ -23,6 +23,7 @@ import java.util.Optional;
 
 
 @Service
+
 public class ProductServiceImpl implements ProductService
 {
 
@@ -65,7 +66,7 @@ public class ProductServiceImpl implements ProductService
             return ResponseEntity.ok(product);
         }catch (ResourceNotFoundException resourceNotFoundException)
         {
-            logger.error("Error while fetching products ID.",resourceNotFoundException);
+            logger.error("Error while fetching product with given ID.",resourceNotFoundException);
             throw resourceNotFoundException;
         }
 
@@ -84,7 +85,7 @@ public class ProductServiceImpl implements ProductService
             response.put("deleted" ,  Boolean.TRUE);
             return ResponseEntity.ok(response);
         }catch (ResourceNotFoundException resourceNotFoundException){
-            logger.error("Error while deleting the product ID.", resourceNotFoundException);
+            logger.error("Error while deleting the product with given ID.", resourceNotFoundException);
             throw  resourceNotFoundException;
         }
 
@@ -98,7 +99,7 @@ public class ProductServiceImpl implements ProductService
             Product product = productRepository.findById(products_id).orElseThrow(() ->
                     new ResourceNotFoundException("Product not found with given ID : " + products_id));
 
-            modelMapper.map(productDetails,product);
+            //modelMapper.map(productDetails,product);
 
             product.setProductName(productDetails.getProductName());
             product.setProductPrice(productDetails.getProductPrice());
@@ -106,7 +107,7 @@ public class ProductServiceImpl implements ProductService
             final Product updatedProduct = productRepository.save(product);
             return ResponseEntity.ok(updatedProduct);
         }catch(ResourceNotFoundException resourceNotFoundException){
-            logger.error("Error while updating the porduct ID.", resourceNotFoundException);
+            logger.error("Error while updating the product with given ID.", resourceNotFoundException);
             throw resourceNotFoundException;
         }
     }
